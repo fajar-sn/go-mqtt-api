@@ -17,4 +17,5 @@ func RegisterRoutes(engine *gin.Engine, db *gorm.DB) {
 	routes := engine.Group("/devices")
 	routes.POST("/", handler.AddDevice)
 	routes.GET("/", handler.GetDevices)
+	routes.GET("/:id", handler.GetDevice)
 }
