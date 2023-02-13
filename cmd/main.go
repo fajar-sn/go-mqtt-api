@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/krakensda/go-mqtt-api/pkg/device"
 	"github.com/krakensda/go-mqtt-api/pkg/common/db"
 	"github.com/spf13/viper"
 )
@@ -12,14 +13,7 @@ func main() {
 	port := viper.Get("PORT").(string)
 	dbUrl := viper.Get("DB_URL").(string)
 	app := gin.Default()
-	db.Init(dbUrl)
-
-	app.GET("/", func(context *gin.Context) {
-		context.JSON(200, gin.H{
-			"port": port,
-			"dbUrl": dbUrl,
-		})
-	})
-
+	handler := db.Init(dbUrl)
+	device.RegisterRoutes(app, handler)
 	app.Run(port)
 }
