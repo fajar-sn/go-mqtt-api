@@ -30,6 +30,6 @@ func (handler Handler) AddDevice(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Successfully add new device",
-		"data":    &device,
+		"data": &device,
 	})
 }
