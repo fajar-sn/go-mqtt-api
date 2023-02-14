@@ -28,3 +28,25 @@ func (handler Handler) GetTelemetry(context *gin.Context) {
 		"data": &telemetry,
 	})
 }
+
+func (handler Handler) GetLastTelemetry(context *gin.Context) {
+	var telemetry models.Telemetry
+	result := handler.DB.Last(&telemetry)
+
+	if result.Error != nil {
+		context.JSON(http.StatusNotFound, gin.H{
+			"message": "No data found",
+			"data": nil,
+		})
+		return
+	}
+
+	var device models.Device
+	handler.DB.First(&device, telemetry.DeviceID)
+	telemetry.Device = device
+
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Successfully get last telemetry",
+		"data": &telemetry,
+	})
+}
