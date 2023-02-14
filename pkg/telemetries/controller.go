@@ -16,4 +16,6 @@ func RegisterRoutes(engine *gin.Engine, db *gorm.DB) {
 
 	routes := engine.Group("/telemetries")
 	routes.POST("/", handler.AddTelemetry)
+	routes.GET("/", handler.GetTelemetries)
+	routes.GET("/:id", handler.GetTelemetry)
 }

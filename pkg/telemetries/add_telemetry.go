@@ -14,7 +14,7 @@ func (handler Handler) AddTelemetry(context *gin.Context) {
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": err.Error(),
 			"data": nil,
 		})
 		return
@@ -25,7 +25,7 @@ func (handler Handler) AddTelemetry(context *gin.Context) {
 
 	if result.Error != nil {
 		context.JSON(http.StatusNotFound, gin.H{
-			"message": result.Error,
+			"message": "Device ID not found",
 			"data": nil,
 		})
 		return
@@ -39,7 +39,7 @@ func (handler Handler) AddTelemetry(context *gin.Context) {
 
 	if result.Error != nil {
 		context.JSON(http.StatusNotFound, gin.H{
-			"message": result.Error,
+			"message": "Add new telemetry failed",
 			"data": nil,
 		})
 		return
