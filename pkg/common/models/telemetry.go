@@ -12,5 +12,5 @@ type Telemetry struct {
 
 type TelemetryRequestBody struct {
 	Data		int		`json:"data"`
-	DeviceID	uint	`json:"device_id"`
+	Token		string 	`json:"token"`
 }

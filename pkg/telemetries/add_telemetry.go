@@ -14,18 +14,18 @@ func (handler Handler) AddTelemetry(context *gin.Context) {
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
+			"message": "data and token is required",
 			"data": nil,
 		})
 		return
 	}
 
 	var device models.Device
-	result := handler.DB.Find(&device, body.DeviceID)
+	result := handler.DB.Where("token = ?", body.Token).First(&device)
 
 	if result.Error != nil {
 		context.JSON(http.StatusNotFound, gin.H{
-			"message": "Device ID not found",
+			"message": "Device with token:" + body.Token + " not found",
 			"data": nil,
 		})
 		return
@@ -33,7 +33,7 @@ func (handler Handler) AddTelemetry(context *gin.Context) {
 
 	var telemetry models.Telemetry
 	telemetry.Data = body.Data
-	telemetry.DeviceID = body.DeviceID
+	telemetry.DeviceID = device.ID
 	telemetry.Device = device
 	result = handler.DB.Create(&telemetry)
 
