@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"time"
-	"math/rand"
-	"net/http"
+	"bytes"
 	"encoding/json"
-	"github.com/spf13/viper"
-	"github.com/krakensda/go-mqtt-api/pkg/common/models"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
+	"net/http"
+	"time"
+
+	"github.com/krakensda/go-mqtt-api/pkg/common/models"
+	"github.com/spf13/viper"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -24,9 +26,27 @@ type Thermometer struct {
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, message mqtt.Message) {
 	var payload Thermometer
 	json.Unmarshal(message.Payload(), &payload)
-	fmt.Println("payload")
-	fmt.Println(payload)
-	fmt.Println("")
+
+	input := models.TelemetryRequestBody {
+		Data: payload.Data,
+		Token: payload.Token,
+	}
+
+	inputJson, err := json.Marshal(input)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	response, err := http.Post("http://localhost:3000/telemetries/", "application/json", bytes.NewBuffer(inputJson))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var responseMap map[string]interface{}
+	json.NewDecoder(response.Body).Decode(&responseMap)
+	fmt.Println(responseMap)
 }
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
