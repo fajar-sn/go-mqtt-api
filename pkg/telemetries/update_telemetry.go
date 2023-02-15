@@ -31,7 +31,7 @@ func (handler Handler) UpdateTelemetry(context *gin.Context) {
 	}
 
 	var device models.Device
-	result = handler.DB.First(&device, body.DeviceID)
+	result = handler.DB.Where("token = ?", body.Token).First(&device)
 
 	if result.Error != nil {
 		context.JSON(http.StatusNotFound, gin.H{
@@ -42,7 +42,7 @@ func (handler Handler) UpdateTelemetry(context *gin.Context) {
 	}
 
 	telemetry.Data = body.Data
-	telemetry.DeviceID = body.DeviceID
+	telemetry.DeviceID = device.ID
 	handler.DB.Save(&telemetry)
 	telemetry.Device = device
 

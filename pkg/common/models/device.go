@@ -16,3 +16,7 @@ type DeviceRequestBody struct {
 	Name	string `json:"name"`
 	Token	string `json:"token"`
 }
+
+type TokenRequestBody struct {
+	Token string `json:"token"`
+}
